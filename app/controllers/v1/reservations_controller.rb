@@ -2,21 +2,28 @@ class V1::ReservationsController < ApplicationController
   before_action :set_reservation, only: [:index, :update, :show, :delete]
 
   def create
-    result = {error: "JSON is the only accepted format.", status: 400}
-    if request.content_type == "application/json"
-      reservation = ParseRequest.call(payload: params)
-      binding.pry
-      # if Reservation.create()
+    result = {error: "Cannot process request", status: 400}
+
+    parsed_reservation = ParseRequest.call(payload: params, format: request.content_type)
+    if parsed_reservation[:errors].present?
+      result = {errors: parsed_reservation[:errors], status: 400}
+    else
+      @reservation = Reservation.create(reservation_params(parsed_reservation[:reservation]))
+      result = {success: @reservation, status: 200}
+      if @reservation.errors.present?
+        result = { error: @reservation.errors.full_messages.join(", "), status: 400}
+      end
     end
+
     render json: result
   end
 
   private
-    def reservation_params
-      params.require(:reservation).permit(:currency, :reservation_code, :status, :start_date, :end_date, :no_of_nights,
+    def reservation_params(parsed_reservation)
+      ActionController::Parameters.new(parsed_reservation).permit(:currency, :reservation_code, :status, :start_date, :end_date, :no_of_nights,
                                           :no_of_guests, :no_of_infants, :no_of_adults, :no_of_children, :total_price,
                                           :payout_amt, :security_price, :guest_id,
-                                            guest_attributes: [:id, :email, :first_name, :last_name, :phone_numbers])
+                                            guest_attributes: [:email, :first_name, :last_name, phone_numbers: []])
     end
 
     def set_reservation
