@@ -2,30 +2,28 @@ require 'json'
 class ParseRequest
   def initialize(payload:)
     @payload = payload
-    @format = format
   end
 
-  def self.call(payload:, format:)
+  def self.call(payload:)
     new(payload: payload).call
   end
 
   def call
-
+    process_payload
   end
 
   private
-    def is_json_format
-    end
 
     def process_payload
-      # parse_data = {}
-      # if @payload["request"].present?
-      #   parsed_data = PayloadProcesses::PayloadOne.call(payload: @payload)
-      # else
-      #   #parse_date = PayloadProcesses::PayloadTwo.call(payload: @payload)
-      # end
-      #
-      # return parsed_data
+      parse_data = {}
+      if @payload["reservation"].present?
+        parsed_data = PayloadProcesses::PayloadTwo.parse(payload: @payload)
+      else
+        parse_date = PayloadProcesses::PayloadOne.call(payload: @payload)
+      end
+
+      return parsed_data
     end
+
 
 end
