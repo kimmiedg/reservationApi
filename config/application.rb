@@ -27,6 +27,7 @@ module ReservationApi
       app.routes_reloader.paths.delete_if {|path| path =~ /activestorage/}
       app.routes_reloader.paths.delete_if {|path| path =~ /actionmailbox/ }
     }
+    config.autoload_paths << Rails.root.join('lib')
 
     # Configuration for the application, engines, and railties goes here.
     #
