@@ -20,8 +20,8 @@ class String
 
   def is_valid_phone_num?
     if is_valid_num?
-      begin self.count == 12
-        self[0] == 6 && self[1] == 3
+      begin self.size == 12
+        self[0] == "6" && self[1] == "3"
       rescue
         false
       end
