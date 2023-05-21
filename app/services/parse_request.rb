@@ -1,15 +1,21 @@
 require 'json'
 class ParseRequest
-  def initialize(payload:)
+  def initialize(payload:, format:)
     @payload = payload
+    @format = format
   end
 
-  def self.call(payload:)
-    new(payload: payload).call
+  def self.call(payload:, format:)
+    new(payload: payload, format: format).call
   end
 
   def call
-    process_payload
+    parsed_data = {errors: "Must be JSON request format."}
+    if @format == "application/json"
+      parsed_data = process_payload
+    end
+
+    return parsed_data
   end
 
   private
