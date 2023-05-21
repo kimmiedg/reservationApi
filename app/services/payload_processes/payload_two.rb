@@ -26,26 +26,20 @@ class PayloadProcesses::PayloadTwo
                             guest_attributes: {email: email, first_name: first_name, last_name: last_name, phone_numbers: phone_numbers}}}
     end
 
-    def add_error(error)
-      @errors[:errors].push(error)
+    def add_error(error_msg)
+      PayloadProcesses::PayloadValidations.add_error(@errors[:errors], error_msg)
     end
 
     def verify_string_presence(str, error_msg)
-      if str.present?
-        str
-      else
-        add_error(error_msg)
-        ""
-      end
+      PayloadProcesses::PayloadValidations.verify_string_presence(str, @errors[:errors], error_msg)
     end
 
     def verify_if_number(num, error_msg)
-      if num.present? && num.is_valid_num?
-        num
-      else
-        add_error(error_msg)
-        0
-      end
+      PayloadProcesses::PayloadValidations.verify_if_number(num, @errors[:errors], error_msg)
+    end
+
+    def verify_date(str, error_msg)
+      PayloadProcesses::PayloadValidations.verify_date(str, @errors[:errors], error_msg)
     end
 
     def reservation_code
@@ -53,21 +47,11 @@ class PayloadProcesses::PayloadTwo
     end
 
     def start_date
-      begin
-        @payload["start_date"].to_date
-      rescue ArgumentError
-        add_error("Invalid Start Date")
-        ""
-      end
+      verify_date(@payload["start_date"], "Invalid Start Date")
     end
 
     def end_date
-      begin
-        @payload["end_date"].to_date
-      rescue ArgumentError
-        add_error("Invalid End Date")
-        ""
-      end
+      verify_date(@payload["end_date"], "Invalid End Date")
     end
 
     def payout_amt
@@ -111,8 +95,7 @@ class PayloadProcesses::PayloadTwo
     end
 
     def email
-      a = @payload["guest_email"].to_s
-      a.is_valid_email? ? a : add_error("Email is invalid.")
+      PayloadProcesses::PayloadValidations.verify_email_format(@payload["guest_email"], @errors[:errors], "Email is invalid.")
     end
 
     def first_name
@@ -124,12 +107,7 @@ class PayloadProcesses::PayloadTwo
     end
 
     def phone_numbers
-      phone_nos = @payload["guest_phone_numbers"]
-      unless phone_nos.all? {|phone| phone.is_valid_phone_num? }
-        add_error("Phone number must be in correct format")
-      end
-
-      phone_nos
+      PayloadProcesses::PayloadValidations.verify_phone_number(@payload["guest_phone_numbers"], @errors[:errors], "Phone number must be in correct format")
     end
 
 end

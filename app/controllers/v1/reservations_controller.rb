@@ -2,16 +2,15 @@ class V1::ReservationsController < ApplicationController
   before_action :set_reservation, only: [:index, :update, :show, :delete]
 
   def create
-    result = {error: "Cannot process request", status: 400}
-
     parsed_reservation = ParseRequest.call(payload: params, format: request.content_type)
     if parsed_reservation[:errors].present?
       result = {errors: parsed_reservation[:errors], status: 400}
     else
       @reservation = Reservation.create(reservation_params(parsed_reservation[:reservation]))
-      result = {success: @reservation, status: 200}
       if @reservation.errors.present?
         result = { error: @reservation.errors.full_messages.join(", "), status: 400}
+      else
+        result = { success: {reservation: @reservation, guest: @reservation.guest }, status: 200}
       end
     end
 
