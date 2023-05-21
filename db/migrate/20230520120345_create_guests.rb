@@ -6,7 +6,7 @@ class CreateGuests < ActiveRecord::Migration[6.1]
       t.string :last_name
       t.text :phone_numbers, array: true, default: []
 
-      t.timestamps null: false
+      t.timestamps
     end
   end
 end
