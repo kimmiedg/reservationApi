@@ -3,10 +3,11 @@ class V1::ReservationsController < ApplicationController
 
   def create
     result = {error: "JSON is the only accepted format.", status: 400}
-    # if request.content_type == "application/json"
-    #   reservation = ParseRequest.call(payload: params)
-    #
-    # end
+    if request.content_type == "application/json"
+      reservation = ParseRequest.call(payload: params)
+      binding.pry
+      # if Reservation.create()
+    end
     render json: result
   end
 

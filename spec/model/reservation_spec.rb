@@ -3,11 +3,17 @@ require 'rails_helper'
 RSpec.describe Reservation, type: :model do
   describe 'validations' do
     subject {
-      Reservation.new(reservation_code: "12345")
+      Reservation.new(reservation_code: "12345", guest_id: 1)
     }
 
-    it 'validates uniqueness of reservation code' do
-      expect(subject).to validate_uniqueness_of(:reservation_code)
+    before do
+      Reservation.create(reservation_code: "12345")
+      Guest.create(email: "test@test.com")
+    end
+
+    it 'validates uniqueness of reservation_code and guest email combined' do
+      subject.valid?
+      expect(subject.errors[:base]).to include("Reservation code and email must be unique")
     end
 
     it 'validates presence of all fields' do
@@ -17,6 +23,6 @@ RSpec.describe Reservation, type: :model do
            expect(subject).to validate_presence_of(f)
       end
     end
-    
+
   end
 end
