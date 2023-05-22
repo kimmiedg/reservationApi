@@ -46,10 +46,8 @@ class PayloadProcesses::PayloadValidations
 
   def self.verify_phone_number(phone_nos, arr, error_msg)
     self.add_error(arr, "Phone number cannot be nil.") if phone_nos.blank?
-    if phone_nos.present?
-      is_valid_format = phone_nos.all? {|phone| phone.to_s.is_valid_phone_num?}
-      self.add_error(arr, "Phone number must be in correct format") unless is_valid_format
-    end
+    is_valid_format = phone_nos.all? {|phone| phone.to_s.is_valid_phone_num?}
+    self.add_error(arr, "Phone number must be in correct format") unless is_valid_format
 
     phone_nos
   end
