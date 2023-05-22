@@ -1,5 +1,5 @@
 require 'core_ext/string'
-class PayloadProcesses::PayloadTwo
+class PayloadProcesses::PayloadOne
 
   def initialize(payload:)
     @payload = payload
@@ -11,7 +11,7 @@ class PayloadProcesses::PayloadTwo
   end
 
   def parse
-    @payload = @payload.key?("reservation") ? reformat_payload : @errors.push("Payload cannot be processed. Check request.")
+    @payload = @payload.present? ? reformat_payload : {error: "Unsupported format"}
     @payload = @errors[:errors].present? ? @errors : @payload
 
     @payload
@@ -42,7 +42,7 @@ class PayloadProcesses::PayloadTwo
     end
 
     def reservation_code
-      verify_string_presence(@payload["code"].to_s, "Reservation Code must be present.")
+      verify_string_presence(@payload["reservation_code"].to_s, "Reservation Code must be present.")
     end
 
     def start_date
@@ -54,35 +54,35 @@ class PayloadProcesses::PayloadTwo
     end
 
     def payout_amt
-      verify_if_number(@payload["expected_payout_amount"], "Payout Amount must be numeric")
+      verify_if_number(@payload["payout_price"], "Payout Amount must be numeric")
     end
 
     def no_of_guests
-      verify_if_number(@payload["guest_details"]["localized_description"][0], "Number of guest must be included")
+      verify_if_number(@payload["guests"].to_s, "Number of guests must be numeric")
     end
 
     def no_of_infants
-      verify_if_number(@payload["guest_details"]["number_of_infants"].to_s, "Number of infants must be numeric")
+      verify_if_number(@payload["infants"].to_s, "Number of infants must be numeric")
     end
 
     def no_of_children
-      verify_if_number(@payload["guest_details"]["number_of_children"].to_s, "Number of children must be numeric")
+      verify_if_number(@payload["children"].to_s, "Number of children must be numeric")
     end
 
     def no_of_adults
-      verify_if_number(@payload["guest_details"]["number_of_adults"].to_s, "Number of adults must be numeric")
+      verify_if_number(@payload["adults"].to_s, "Number of adults must be numeric")
     end
 
     def status
-      verify_string_presence(@payload["status_type"], "Status must not be empty")
+      verify_string_presence(@payload["status"], "Status must not be empty")
     end
 
     def security_price
-      verify_if_number(@payload["listing_security_price_accurate"], "Security price must be numeric")
+      verify_if_number(@payload["security_price"], "Security price must be numeric")
     end
 
     def currency
-      verify_string_presence(@payload["host_currency"], "Must be a valid currency.")
+      verify_string_presence(@payload["currency"], "Must be a valid currency.")
     end
 
     def nights
@@ -90,23 +90,23 @@ class PayloadProcesses::PayloadTwo
     end
 
     def total_price
-      verify_if_number(@payload["total_paid_amount_accurate"].to_s, "Total price must be numeric")
+      verify_if_number(@payload["total_price"].to_s, "Total price must be numeric")
     end
 
     def email
-      PayloadProcesses::PayloadValidations.verify_email_format(@payload["guest_email"], @errors[:errors], "Email is invalid.")
+      PayloadProcesses::PayloadValidations.verify_email_format(@payload["guest"]["email"], @errors[:errors], "Email is invalid.")
     end
 
     def first_name
-      verify_string_presence(@payload["guest_first_name"], "First Name must be present")
+      verify_string_presence(@payload["guest"]["first_name"], "First Name must be present")
     end
 
     def last_name
-      verify_string_presence(@payload["guest_last_name"], "Last Name must be present")
+      verify_string_presence(@payload["guest"]["last_name"], "Last Name must be present")
     end
 
     def phone_numbers
-      PayloadProcesses::PayloadValidations.verify_phone_number(@payload["guest_phone_numbers"], @errors[:errors], "Phone number must be in correct format")
+      PayloadProcesses::PayloadValidations.verify_phone_number(@payload["guest"]["phone"].split(","), @errors[:errors], "Phone number must be in correct format")
     end
 
 end

@@ -21,10 +21,10 @@ class ParseRequest
   private
 
     def process_payload
-      if @payload["reservation"].present?
+      if @payload.key?("reservation")
         parsed_data = PayloadProcesses::PayloadTwo.parse(payload: @payload)
       else
-        parsed_data = PayloadProcesses::PayloadOne.call(payload: @payload)
+        parsed_data = PayloadProcesses::PayloadOne.parse(payload: @payload)
       end
 
       return parsed_data

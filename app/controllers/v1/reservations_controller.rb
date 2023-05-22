@@ -2,8 +2,8 @@ class V1::ReservationsController < ApplicationController
   before_action :set_reservation, only: [:index, :update, :show, :delete]
 
   def create
-    parsed_reservation = ParseRequest.call(payload: params, format: request.content_type)
-    if parsed_reservation[:errors].present?
+    parsed_reservation = ParseRequest.call(payload: JSON.parse(request.body.read()), format: request.content_type)
+    if parsed_reservation.key?("errors")
       result = {errors: parsed_reservation[:errors], status: 400}
     else
       @reservation = Reservation.create(reservation_params(parsed_reservation[:reservation]))

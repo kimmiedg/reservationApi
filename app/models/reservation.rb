@@ -3,6 +3,7 @@ class Reservation < ApplicationRecord
   validates_presence_of :reservation_code, :currency, :status, :start_date, :end_date,
                         :no_of_nights, :no_of_guests, :no_of_infants, :no_of_adults,
                         :no_of_children, :total_price, :payout_amt, :security_price
+
   validate :reservation_code_guest_email_unique, on: :create
 
   accepts_nested_attributes_for :guest
