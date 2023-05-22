@@ -15,19 +15,20 @@ class ParseRequest
       parsed_data = process_payload
     end
 
-    return parsed_data
+    parsed_data
   end
 
   private
 
+    # Use Switch Statements for additional Payload Process.
     def process_payload
       if @payload.key?("reservation")
-        parsed_data = PayloadProcesses::PayloadTwo.parse(payload: @payload)
+        parsed_data = PayloadProcesses::PayloadTwo.parse(payload: @payload["reservation"])
       else
         parsed_data = PayloadProcesses::PayloadOne.parse(payload: @payload)
       end
 
-      return parsed_data
+      parsed_data
     end
 
 

@@ -9,6 +9,6 @@ class Guest < ApplicationRecord
   private
     def remove_duplicate_phone_no
       self.phone_numbers += phone_numbers
-      self.phone_numbers.uniq
+      self.phone_numbers = self.phone_numbers.uniq
     end
 end

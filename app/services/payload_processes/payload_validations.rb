@@ -24,7 +24,7 @@ class PayloadProcesses::PayloadValidations
   end
 
   def self.verify_if_number(num, arr, error_msg)
-    return num if num.present? && num.is_valid_num?
+    return num if num.present? && num.to_s.is_valid_num?
     self.add_error(arr, error_msg)
     0
   end
@@ -51,4 +51,14 @@ class PayloadProcesses::PayloadValidations
 
     phone_nos
   end
+
+  def guest_params_present(first_key, second_key)
+    if @payload.key?(first_key) || @payload.key?(first_key.to_sym)
+      if @payload[first_key].key?(second_key)
+        return true
+      end
+    end
+    return false
+  end
+  
 end

@@ -25,6 +25,10 @@ class PayloadProcesses::PayloadOne
                             guest_attributes: {email: email, first_name: first_name, last_name: last_name, phone_numbers: phone_numbers}}}
     end
 
+    def guest_params_present(first_key, second_key)
+      PayloadProcesses::PayloadValidations.guest_params_present(first_key, second_key)
+    end
+
     def add_error(error_msg)
       PayloadProcesses::PayloadValidations.add_error(@errors[:errors], error_msg)
     end
@@ -93,19 +97,25 @@ class PayloadProcesses::PayloadOne
       verify_if_number(@payload["total_price"].to_s, "Total price must be numeric")
     end
 
+
+
     def email
+      return add_error("Please supply guest's email.") unless guest_params_present("guest","email")
       PayloadProcesses::PayloadValidations.verify_email_format(@payload["guest"]["email"], @errors[:errors], "Email is invalid.")
     end
 
     def first_name
+      return add_error("Please supply guest's first name.") unless guest_params_present("guest","first_name")
       verify_string_presence(@payload["guest"]["first_name"], "First Name must be present")
     end
 
     def last_name
+      return add_error("Please supply guest's last name.") unless guest_params_present("guest","last_name")
       verify_string_presence(@payload["guest"]["last_name"], "Last Name must be present")
     end
 
     def phone_numbers
+      return add_error("Please supply guest's phone number(s).") unless guest_params_present("guest","phone")
       PayloadProcesses::PayloadValidations.verify_phone_number(@payload["guest"]["phone"].split(","), @errors[:errors], "Phone number must be in correct format")
     end
 

@@ -9,9 +9,14 @@ class Reservation < ApplicationRecord
   accepts_nested_attributes_for :guest
 
   def guest_attributes=(attributes)
-    self.guest = Guest.find_or_create_by(email: attributes["email"]) do |guest|
-      guest.attributes = attributes
+    if attributes.present?
+      self.guest = Guest.find_or_initialize_by(email: attributes["email"])
+      self.guest.attributes = attributes
+      self.guest.save
+      self.guest.phone_numbers = self.guest.phone_numbers.uniq if self.guest.phone_numbers.present?
     end
+    rescue
+      self.guest.phone_numbers = []
   end
 
   private

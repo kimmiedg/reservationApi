@@ -11,7 +11,7 @@ class PayloadProcesses::PayloadTwo
   end
 
   def parse
-    @payload = @payload.key?("reservation") ? reformat_payload : @errors.push("Payload cannot be processed. Check request.")
+    @payload = reformat_payload
     @payload = @errors[:errors].present? ? @errors : @payload
 
     @payload
@@ -24,6 +24,7 @@ class PayloadProcesses::PayloadTwo
                             status: status, security_price: security_price, currency: currency, no_of_nights: nights, total_price: total_price,
                             guest_attributes: {email: email, first_name: first_name, last_name: last_name, phone_numbers: phone_numbers}}}
     end
+
 
     def add_error(error_msg)
       PayloadProcesses::PayloadValidations.add_error(@errors[:errors], error_msg)
