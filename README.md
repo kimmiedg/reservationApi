@@ -1,24 +1,14 @@
-# README
+This application is purely API and designed to receive two sets of different payloads for Reservations from third-party applications.
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+NOTE: Please see the app requirements for the exact payload request.
 
-Things you may want to cover:
 
-* Ruby version
+This application runs on:
+Ruby v. 2.6.3
+Rails v.6.1.7.3
 
-* System dependencies
+Please do not forget to run:
 
-* Configuration
+rails db:create db:migrate
 
-* Database creation
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
