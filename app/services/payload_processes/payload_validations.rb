@@ -52,13 +52,13 @@ class PayloadProcesses::PayloadValidations
     phone_nos
   end
 
-  def guest_params_present(first_key, second_key)
-    if @payload.key?(first_key) || @payload.key?(first_key.to_sym)
-      if @payload[first_key].key?(second_key)
+  def self.guest_params_present(payload, first_key, second_key)
+    if payload.key?(first_key) || payload.key?(first_key.to_sym)
+      if payload[first_key].key?(second_key)
         return true
       end
     end
-    return false
+    false
   end
-  
+
 end

@@ -26,7 +26,7 @@ class PayloadProcesses::PayloadOne
     end
 
     def guest_params_present(first_key, second_key)
-      PayloadProcesses::PayloadValidations.guest_params_present(first_key, second_key)
+      PayloadProcesses::PayloadValidations.guest_params_present(@payload, first_key, second_key)
     end
 
     def add_error(error_msg)
@@ -96,8 +96,6 @@ class PayloadProcesses::PayloadOne
     def total_price
       verify_if_number(@payload["total_price"].to_s, "Total price must be numeric")
     end
-
-
 
     def email
       return add_error("Please supply guest's email.") unless guest_params_present("guest","email")

@@ -25,6 +25,9 @@ class PayloadProcesses::PayloadTwo
                             guest_attributes: {email: email, first_name: first_name, last_name: last_name, phone_numbers: phone_numbers}}}
     end
 
+    def guest_params_present(first_key, second_key)
+      PayloadProcesses::PayloadValidations.guest_params_present(@payload, first_key, second_key)
+    end
 
     def add_error(error_msg)
       PayloadProcesses::PayloadValidations.add_error(@errors[:errors], error_msg)
@@ -59,18 +62,22 @@ class PayloadProcesses::PayloadTwo
     end
 
     def no_of_guests
+      return add_error("Supply guest details.") unless guest_params_present("guest_details","localized_description")
       verify_if_number(@payload["guest_details"]["localized_description"][0], "Number of guest must be included")
     end
 
     def no_of_infants
+      return add_error("Supply number of infants.") unless guest_params_present("guest_details","number_of_infants")
       verify_if_number(@payload["guest_details"]["number_of_infants"].to_s, "Number of infants must be numeric")
     end
 
     def no_of_children
+      return add_error("Supply number of children.") unless guest_params_present("guest_details","number_of_children")
       verify_if_number(@payload["guest_details"]["number_of_children"].to_s, "Number of children must be numeric")
     end
 
     def no_of_adults
+      return add_error("Supply number of adults.") unless guest_params_present("guest_details","number_of_adults")
       verify_if_number(@payload["guest_details"]["number_of_adults"].to_s, "Number of adults must be numeric")
     end
 
